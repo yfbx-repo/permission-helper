@@ -1,17 +1,12 @@
 # permission-helper
 
 ```
-
-
-
     /**
      * 方式一(推荐)
      */
     private fun startScan() = requireScan {
         //调用相机
     }
-    
-    
         
     /**
      * 请求扫描权限(单独文件，全局统一管理)

@@ -1,28 +1,30 @@
-package com.yfbx.permission.helper
+package com.yfbx.demo.permission
 
 import android.app.AlertDialog
 import android.content.Context
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 
 /**
- * Date: 2022-08-23
+ * Date: 2022-08-24
  * Author: Edward
  * Desc:
  */
+
 /**
  * 请求权限之前,弹窗说明用途
  */
-suspend fun Context.showTipDialog(tip: String) = suspendCoroutine<Boolean> {
+fun Context.showTipDialog(tip: String, callback: (Boolean) -> Unit) {
     AlertDialog.Builder(this)
         .setTitle("提示")
         .setMessage(tip)
         .setNegativeButton("取消") { dialog, _ ->
+            callback.invoke(false)
             dialog.dismiss()
-            it.resume(false)
         }
         .setPositiveButton("确认") { dialog, _ ->
-            it.resume(true)
+            callback.invoke(true)
             dialog.dismiss()
         }
         .show()
@@ -43,4 +45,16 @@ fun Context.showAlertDialog(tip: String) {
             dialog.dismiss()
         }
         .show()
+}
+
+
+/**
+ * 跳转系统设置
+ */
+fun Context.toSettings() {
+    val intent = Intent()
+    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+    val uri = Uri.fromParts("package", packageName, null)
+    intent.data = uri
+    startActivity(intent)
 }

@@ -2,6 +2,7 @@ package com.yfbx.demo.permission
 
 import android.Manifest
 import android.content.Context
+import com.yfbx.permission.helper.VoidCallback
 import com.yfbx.permission.helper.require
 
 /**
@@ -9,6 +10,32 @@ import com.yfbx.permission.helper.require
  * Author: Edward
  * Desc:  统一管理全局权限请求
  */
+
+
+/**
+ * 1. 请求权限之前，说明权限用途
+ * 2. 请求权限
+ * 3. 权限拒绝后，提示功能不可用
+ */
+fun Context.require(
+    vararg permissions: String,
+    tip: String,
+    alert: String,
+    callback: VoidCallback
+) {
+    showTipDialog(tip) {
+        if (it) {
+            require(*permissions) {
+                onGrant {
+                    callback.invoke()
+                }
+                onDeny {
+                    showAlertDialog(alert)
+                }
+            }
+        }
+    }
+}
 
 
 /**

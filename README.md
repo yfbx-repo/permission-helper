@@ -5,7 +5,7 @@
 使用新API`registerForActivityResult`进行权限请求.    
 解决 `LifecycleOwners must call register before they are STARTED.` 问题.    
 
-### 使用方法
+### 一、使用方法
 ```
 repositories {
     maven { url 'https://jitpack.io' }
@@ -32,7 +32,7 @@ private fun requestCamera() {
 
 ```
 
-### 核心代码
+### 二、核心代码
 ```
 fun <I, O> ComponentActivity.registerForResult(
     contract: ActivityResultContract<I, O>,
@@ -61,7 +61,7 @@ fun ComponentActivity.registerForPermissions(callback: PermissionsCallback): Act
 }
 ```
 
-### 由于隐私合规等问题，可以进一步封装
+### 三、由于隐私合规等问题，可以进一步封装
 ```
 
 /**

@@ -4,16 +4,9 @@ import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import kotlinx.coroutines.*
-import java.lang.Exception
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.declaredMembers
 
 /**
  * Date: 2022-08-18
@@ -24,18 +17,14 @@ import kotlin.reflect.full.declaredMembers
 
 private val mNextLocalRequestCode = AtomicInteger()
 typealias VoidCallback = () -> Unit
-typealias PermissionsCallback = (MutableMap<String, Boolean>) -> Unit
 
 /**
  * 请求权限
  */
-fun Context.require(
-    vararg permissions: String,
-    build: PermissionBuilder.() -> Unit,
-) {
+fun Context.require(vararg permissions: String, build: PermissionBuilder.() -> Unit) {
+    require(this is ComponentActivity) { "Context must be ComponentActivity" }
     val builder = PermissionBuilder().apply(build)
-    MainScope().launch {
-        val map = require(*permissions)
+    registerPermissions(*permissions) { map ->
         //有一个权限拒绝，则视为授权被拒绝
         val isDeny = map.any { !it.value }
         if (isDeny) {
@@ -49,28 +38,20 @@ fun Context.require(
 }
 
 /**
- * 请求权限，返回结果集
- */
-suspend fun Context.require(vararg permissions: String): MutableMap<String, Boolean> {
-    require(this is ComponentActivity) { "Context must be ComponentActivity" }
-    return suspendCoroutine { continuation ->
-        val launcher = registerForPermissions { continuation.resume(it) }
-        launcher.launch(permissions)
-    }
-}
-
-/**
  * 注册权限请求，回调之后立即解除注册
  */
-fun ComponentActivity.registerForPermissions(callback: PermissionsCallback): ActivityResultLauncher<Array<out String>> {
+fun ComponentActivity.registerPermissions(
+    vararg permissions: String,
+    callback: (MutableMap<String, Boolean>) -> Unit
+) {
     var launcher: ActivityResultLauncher<Array<out String>>? = null
     launcher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        registerForResult(ActivityResultContracts.RequestMultiplePermissions()) {
             callback.invoke(it)
             //回调之后立即解除注册
             launcher?.unregister()
         }
-    return launcher
+    launcher.launch(permissions)
 }
 
 /**

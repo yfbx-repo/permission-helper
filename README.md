@@ -1,5 +1,6 @@
 # permission-helper
-
+[![License](https://img.shields.io/github/license/yfbx-repo/permission-helper)](https://fossa.com/blog/open-source-software-licenses-101-gpl-v3)
+[![](https://img.shields.io/badge/release-1.0.0-blue.svg)](https://github.com/yfbx-repo/permission-helper/releases)
 使用新API`registerForActivityResult`进行权限请求.    
 解决 `LifecycleOwners must call register before they are STARTED.` 问题.
 - 核心代码

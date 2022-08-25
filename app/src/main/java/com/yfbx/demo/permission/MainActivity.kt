@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * 统一管理，推荐方式
      */
-    private fun startScan() = requireScan {
-        //调用相机扫描
+    private fun takePhoto() = requireCamera {
+        //调用相机
     }
 }

@@ -45,3 +45,55 @@ fun ComponentActivity.registerForPermissions(callback: PermissionsCallback): Act
        }
     
 ```
+
+- 由于隐私合规等问题，可以进一步封装
+```
+
+/**
+ * 1. 请求权限之前，说明权限用途
+ * 2. 请求权限
+ * 3. 权限拒绝后，提示功能不可用
+ */
+fun Context.require(
+    vararg permissions: String,
+    tip: String,
+    alert: String,
+    callback: VoidCallback
+) {
+    showTipDialog(tip) {
+        if (it) {
+            require(*permissions) {
+                onGrant {
+                    callback.invoke()
+                }
+                onDeny {
+                    showAlertDialog(alert)
+                }
+            }
+        }
+    }
+}
+```
+
+可以在单独文件中统一管理全局权限请求
+```
+
+/**
+ * 请求相机权限
+ */
+fun Context.requireCamera(callback: () -> Unit) = require(
+    Manifest.permission.CAMERA,
+    tip = "我们需要使用您的相机，以实现拍照上传功能",
+    alert = "未获得授权，相机不可用",
+    callback = callback
+)
+
+```
+
+这样，实际使用时，只需要关心获得授权的逻辑
+
+```
+ private fun takePhoto() = requireCamera {
+    //调用相机
+ }
+```

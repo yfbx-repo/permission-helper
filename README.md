@@ -1,6 +1,6 @@
 # permission-helper
 
-使用新API`registerForActivityResult`进行权限请求.
+使用新API`registerForActivityResult`进行权限请求.    
 解决 `LifecycleOwners must call register before they are STARTED.` 问题.
 - 核心代码
 ```
@@ -15,7 +15,7 @@ fun <I, O> ComponentActivity.registerForResult(
 }
 ```
 
-注意，此方法未关联生命周期，拿到`ActivityResultLauncher`后，需要手动调用`unregister`解除注册.
+注意，此方法未关联生命周期，拿到`ActivityResultLauncher`后，需要手动调用`unregister`解除注册.    
 可以再写一个扩展，在结果回调之后立即解除注册：
 
 ```

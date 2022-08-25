@@ -1,6 +1,6 @@
 # permission-helper
 
-使用新API`registerForActivityResult`进行权限请求.
+使用新API`registerForActivityResult`进行权限请求.    
 解决 `LifecycleOwners must call register before they are STARTED.` 问题.
 - 核心代码
 ```

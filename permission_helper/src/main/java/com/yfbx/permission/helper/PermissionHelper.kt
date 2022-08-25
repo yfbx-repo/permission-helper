@@ -7,12 +7,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.Exception
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.declaredMembers
 
 /**
  * Date: 2022-08-18
@@ -54,42 +55,40 @@ suspend fun Context.require(vararg permissions: String): MutableMap<String, Bool
     require(this is ComponentActivity) { "Context must be ComponentActivity" }
     return suspendCoroutine { continuation ->
         val launcher = registerForPermissions { continuation.resume(it) }
-        launcher?.launch(permissions)
+        launcher.launch(permissions)
     }
 }
 
-fun ComponentActivity.registerForPermissions(callback: PermissionsCallback): ActivityResultLauncher<Array<out String>>? {
+/**
+ * 注册权限请求，回调之后立即解除注册
+ */
+fun ComponentActivity.registerForPermissions(callback: PermissionsCallback): ActivityResultLauncher<Array<out String>> {
     var launcher: ActivityResultLauncher<Array<out String>>? = null
     launcher =
-        registerForResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             callback.invoke(it)
+            //回调之后立即解除注册
             launcher?.unregister()
         }
     return launcher
 }
 
-
+/**
+ * LifecycleOwners must call register before they are STARTED.
+ *
+ * When calling this, you must call {@link ActivityResultLauncher#unregister()} on the
+ * returned {@link ActivityResultLauncher} when the launcher is no longer needed to
+ * release any values that might be captured in the registered callback.
+ *
+ */
 fun <I, O> ComponentActivity.registerForResult(
     contract: ActivityResultContract<I, O>,
     callback: ActivityResultCallback<O>
-): ActivityResultLauncher<I>? {
-    return findRegistry().register(
+): ActivityResultLauncher<I> {
+    //调用这个方法不用传生命周期，但需要调用{@link ActivityResultLauncher#unregister()}解除注册
+    return activityResultRegistry.register(
         "activity_rq#" + mNextLocalRequestCode.getAndIncrement(), contract, callback
     )
-}
-
-fun ComponentActivity.findRegistry(): ActivityResultRegistry {
-    val fields = this.javaClass.fields
-    fields.forEach {
-        it.isAccessible = true
-        println("field --> ${it.name}")
-    }
-
-    println("fields count = ${fields.size}")
-
-    val field = this.javaClass.getDeclaredField("mActivityResultRegistry")
-    field.isAccessible = true
-    return field.get(this) as ActivityResultRegistry
 }
 
 class PermissionBuilder {

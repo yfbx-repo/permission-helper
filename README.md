@@ -5,6 +5,33 @@
 使用新API`registerForActivityResult`进行权限请求.    
 解决 `LifecycleOwners must call register before they are STARTED.` 问题.    
 
+- 使用方法
+```
+repositories {
+	maven { url 'https://jitpack.io' }
+}
+
+
+dependencies {
+	implementation 'com.github.yfbx-repo:permission-helper:1.0.0'
+}
+```
+
+```
+    private fun requestCamera() {
+           require(Manifest.permission.CAMERA) {
+               onGrant {
+                   //获得授权
+               }
+
+               onDeny {
+                   //拒绝授权
+               }
+           }
+       }
+
+```
+
 - 核心代码
 ```
 fun <I, O> ComponentActivity.registerForResult(
@@ -32,21 +59,6 @@ fun ComponentActivity.registerForPermissions(callback: PermissionsCallback): Act
         }
     return launcher
 }
-```
-- 使用方法
-```
-    private fun requestCamera() {
-           require(Manifest.permission.CAMERA) {
-               onGrant {
-                   //获得授权
-               }
-
-               onDeny {
-                   //拒绝授权
-               }
-           }
-       }
-    
 ```
 
 - 由于隐私合规等问题，可以进一步封装

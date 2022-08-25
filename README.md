@@ -1,4 +1,5 @@
 # permission-helper
+[![](https://jitpack.io/v/yfbx-repo/permission-helper.svg)](https://jitpack.io/#yfbx-repo/permission-helper)
 [![License](https://img.shields.io/github/license/yfbx-repo/permission-helper)](https://mit-license.org/)
 [![](https://img.shields.io/badge/release-1.0.0-blue.svg)](https://github.com/yfbx-repo/permission-helper/releases)    
 

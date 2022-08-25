@@ -68,7 +68,7 @@ fun <I, O> ComponentActivity.registerForResult(
 ): ActivityResultLauncher<I> {
     //调用这个方法不用传生命周期，但需要调用{@link ActivityResultLauncher#unregister()}解除注册
     return activityResultRegistry.register(
-        "activity_rq#" + mNextLocalRequestCode.getAndIncrement(), contract, callback
+        "permission_rq#" + mNextLocalRequestCode.getAndIncrement(), contract, callback
     )
 }
 

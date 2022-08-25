@@ -8,27 +8,27 @@
 - 使用方法
 ```
 repositories {
-	maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
 }
 
 
 dependencies {
-	implementation 'com.github.yfbx-repo:permission-helper:1.0.0'
+    implementation 'com.github.yfbx-repo:permission-helper:1.0.0'
 }
 ```
 
 ```
-    private fun requestCamera() {
-           require(Manifest.permission.CAMERA) {
-               onGrant {
-                   //获得授权
-               }
-
-               onDeny {
-                   //拒绝授权
-               }
-           }
+private fun requestCamera() {
+   require(Manifest.permission.CAMERA) {
+       onGrant {
+           //获得授权
        }
+
+       onDeny {
+           //拒绝授权
+       }
+   }
+}
 
 ```
 
